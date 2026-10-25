@@ -1,0 +1,14 @@
+## Inspecting your_actual_dataset_file.csv
+Rows: 506, Columns: 13
+Column names: Fault ID, Fault Type, Fault Location (Latitude, Longitude), Voltage (V), Current (A), Power Load (MW), Temperature (°C), Wind Speed (km/h), Weather Condition, Maintenance Status, Component Health, Duration of Fault (hrs), Down time (hrs)
+No missing values.
+Duplicate rows: 0
+No obvious label column detected.
+Numeric column summary statistics:
+  - Voltage (V): count=506, mean=2049.636, std=141.914, min=1800.0, max=2300.0
+  - Current (A): count=506, mean=216.458, std=21.479, min=180.0, max=250.0
+  - Power Load (MW): count=506, mean=50.012, std=3.100, min=45.0, max=55.0
+  - Temperature (°C): count=506, mean=30.166, std=6.112, min=20.0, max=40.0
+  - Wind Speed (km/h): count=506, mean=19.739, std=5.857, min=10.0, max=30.0
+  - Duration of Fault (hrs): count=506, mean=4.008, std=1.146, min=2.0, max=6.0
+  - Down time (hrs): count=506, mean=4.000, std=1.841, min=1.0, max=7.0

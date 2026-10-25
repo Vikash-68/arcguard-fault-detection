@@ -1,0 +1,33 @@
+Columns detected:
+Fault ID, Fault Type, Fault Location (Latitude, Longitude), Voltage (V), Current (A), Power Load (MW), Temperature (°C), Wind Speed (km/h), Weather Condition, Maintenance Status, Component Health, Duration of Fault (hrs), Down time (hrs)
+
+Fault Type value distribution:
+  - Transformer Failure: 171
+  - Overheating: 171
+  - Line Breakage: 164
+Total records with Fault Type: 506
+Unique Fault Type categories: 3
+Fault Type appears to be a categorical label suitable for supervised classification.
+
+Fault ID column analysis:
+Unique Fault ID count: 506 (should equal total rows if true identifier)
+
+Potential leakage columns (post‑fault information):
+  - Duration of Fault (hrs): present
+  - Down time (hrs): present
+  - Maintenance Status: present
+  - Component Health: present
+
+Recommended input features (pre‑fault):
+Voltage (V), Current (A), Power Load (MW), Temperature (°C), Wind Speed (km/h), Weather Condition, Fault Location (Latitude, Longitude)
+
+Class imbalance assessment:
+Max / Min count ratio: 1.04
+
+Note: Further investigation needed for potential leakage via correlated features (e.g., Duration may directly reflect Fault Type).
+
+Recommendation:
+Target column: Fault Type
+Reason: Provides multiple meaningful categories, matches classification goal, and is not an identifier.
+Excluded columns: Fault ID (identifier), Duration of Fault (hrs), Down time (hrs), Maintenance Status, Component Health (post‑fault leakage risk).
+Potential additional exclusion: any columns that directly encode the outcome.

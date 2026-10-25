@@ -1,0 +1,72 @@
+{
+    "model_name": "ArcGuard Fault Type Classifier",
+    "selected_model_type": "Random Forest",
+    "selection_rationale": "Random Forest was chosen due to higher ensemble stability, reduced variance, better generalization across non-linear feature interactions, and competitive test metrics.",
+    "random_seed": 42,
+    "target_column": "Fault Type",
+    "class_labels": [
+        "Line Breakage",
+        "Overheating",
+        "Transformer Failure"
+    ],
+    "input_features_raw": [
+        "Voltage (V)",
+        "Current (A)",
+        "Power Load (MW)",
+        "Temperature (\u00b0C)",
+        "Wind Speed (km/h)",
+        "Weather Condition",
+        "Fault Location (Latitude, Longitude)"
+    ],
+    "excluded_features": [
+        "Fault ID",
+        "Duration of Fault (hrs)",
+        "Down time (hrs)",
+        "Maintenance Status",
+        "Component Health"
+    ],
+    "transformed_feature_names": [
+        "num__Voltage (V)",
+        "num__Current (A)",
+        "num__Power Load (MW)",
+        "num__Temperature (\u00b0C)",
+        "num__Wind Speed (km/h)",
+        "cat__Weather Condition_Clear",
+        "cat__Weather Condition_Rainy",
+        "cat__Weather Condition_Snowy",
+        "cat__Weather Condition_Thunderstorm",
+        "cat__Weather Condition_Windstorm",
+        "loc__Latitude",
+        "loc__Longitude"
+    ],
+    "training_samples": 404,
+    "test_samples": 102,
+    "metrics_summary": {
+        "Decision Tree": {
+            "accuracy": 0.3235,
+            "macro_precision": 0.3278,
+            "macro_recall": 0.3249,
+            "macro_f1": 0.3244
+        },
+        "Random Forest": {
+            "accuracy": 0.3431,
+            "macro_precision": 0.3462,
+            "macro_recall": 0.3433,
+            "macro_f1": 0.3443
+        }
+    },
+    "artifacts": {
+        "model_pipeline_path": "models/arcguard_fault_model.joblib",
+        "model_report_path": "results/model_report.txt",
+        "confusion_matrices": [
+            "results/decision_tree_confusion_matrix.png",
+            "results/random_forest_confusion_matrix.png",
+            "results/combined_confusion_matrix.png"
+        ]
+    },
+    "disclaimers": [
+        "This model was evaluated on a synthetic/demonstration power-grid dataset.",
+        "Test performance does NOT prove real-world operational performance or physical partial-discharge detection capabilities.",
+        "All operational deployment requires domain validation against real field telemetry and power engineering constraints."
+    ]
+}

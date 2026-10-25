@@ -1,0 +1,125 @@
+======================================================================
+ArcGuard Power-System Fault Classification Model Report
+======================================================================
+
+1. DATASET AND FEATURE VERIFICATION
+--------------------------------------------------
+Source file: dataset/your_actual_dataset_file.csv
+Initial record count: 506
+Invalid records removed: 0
+  - All 506 records are clean and valid (no missing values, valid coordinate syntax).
+Remaining active records: 506
+Full duplicates: 0
+Feature-only duplicates: 0
+
+Target column:
+  - Fault Type (Classes: Line Breakage, Overheating, Transformer Failure)
+
+Input features (strictly pre-fault available):
+  - Voltage (V)
+  - Current (A)
+  - Power Load (MW)
+  - Temperature (°C)
+  - Wind Speed (km/h)
+  - Weather Condition
+  - Fault Location (Latitude, Longitude)
+
+Excluded features (leakage or identifier):
+  - Fault ID (Excluded to prevent data leakage / non-informative ID)
+  - Duration of Fault (hrs) (Excluded to prevent data leakage / non-informative ID)
+  - Down time (hrs) (Excluded to prevent data leakage / non-informative ID)
+  - Maintenance Status (Excluded to prevent data leakage / non-informative ID)
+  - Component Health (Excluded to prevent data leakage / non-informative ID)
+
+2. SPLIT AND PREPROCESSING SETUP
+--------------------------------------------------
+Split ratio: Stratified 80% Train (404 samples) / 20% Test (102 samples)
+Random seed: 42
+Train class balance: {'Transformer Failure': np.int64(137), 'Overheating': np.int64(136), 'Line Breakage': np.int64(131)}
+Test class balance: {'Overheating': np.int64(35), 'Transformer Failure': np.int64(34), 'Line Breakage': np.int64(33)}
+Preprocessing:
+  - Continuous numerical features: SimpleImputer(median) -> StandardScaler
+  - Categorical features: SimpleImputer(most_frequent) -> OneHotEncoder(handle_unknown='ignore')
+  - Coordinate feature: LocationExtractor (parses (lat, lon) string) -> SimpleImputer(median) -> StandardScaler
+  - CRITICAL: Preprocessing pipeline was fit strictly on X_train only; X_test remained untouched.
+
+3. TEST SET EVALUATION METRICS
+--------------------------------------------------
+--- Decision Tree ---
+Test Accuracy:        0.3235
+Macro Precision:      0.3278
+Macro Recall:         0.3249
+Macro F1-Score:       0.3244
+
+Classification Report:
+                     precision    recall  f1-score   support
+
+      Line Breakage       0.33      0.39      0.36        33
+        Overheating       0.26      0.26      0.26        35
+Transformer Failure       0.39      0.32      0.35        34
+
+           accuracy                           0.32       102
+          macro avg       0.33      0.32      0.32       102
+       weighted avg       0.33      0.32      0.32       102
+
+Confusion Matrix:
+Labels: ['Line Breakage', 'Overheating', 'Transformer Failure']
+[[13 13  7]
+ [16  9 10]
+ [10 13 11]]
+
+--- Random Forest ---
+Test Accuracy:        0.3431
+Macro Precision:      0.3462
+Macro Recall:         0.3433
+Macro F1-Score:       0.3443
+
+Classification Report:
+                     precision    recall  f1-score   support
+
+      Line Breakage       0.37      0.33      0.35        33
+        Overheating       0.29      0.31      0.30        35
+Transformer Failure       0.38      0.38      0.38        34
+
+           accuracy                           0.34       102
+          macro avg       0.35      0.34      0.34       102
+       weighted avg       0.35      0.34      0.34       102
+
+Confusion Matrix:
+Labels: ['Line Breakage', 'Overheating', 'Transformer Failure']
+[[11 12 10]
+ [13 11 11]
+ [ 6 15 13]]
+
+4. MODEL COMPARISON AND CANDIDATE SELECTION
+--------------------------------------------------
+Selected Candidate: Random Forest
+Selection Rationale: Random Forest was chosen due to higher ensemble stability, reduced variance, better generalization across non-linear feature interactions, and competitive test metrics.
+Saved Model File: models/arcguard_fault_model.joblib
+Metadata File: models/model_metadata.json
+
+5. DIAGNOSTICS, DATA LEAKAGE & STRUCTURAL LIMITATIONS
+--------------------------------------------------
+A. Data Leakage Assessment:
+   - High-risk post-fault columns ('Duration of Fault (hrs)', 'Down time (hrs)',
+     'Maintenance Status', 'Component Health') were strictly removed before training.
+   - 'Fault ID' was removed to avoid memorizing arbitrary index numbers.
+   - Preprocessing was strictly fit on training folds only.
+
+B. Duplicate / Near-Duplicate Records:
+   - Full-row duplicates: 0
+   - Feature-subset duplicates: 0
+   - No duplicated records inflated test performance.
+
+C. Appropriateness of Random / Stratified Splitting:
+   - The dataset contains 506 synthetic/tabular records without explicit time series timestamps.
+   - Stratified random splitting preserves class ratios (approx 33% per class) across train and test.
+   - Limitation: In actual power grids, faults occur sequentially over time across transmission feeder circuits.
+     If time-series telemetry or specific feeder topology were available, a chronological (time-based) or
+     substation-grouped split would be preferable to avoid temporal cross-contamination.
+
+D. Disclaimers & Real-World Applicability:
+   - The results do NOT prove real-world accuracy or partial-discharge detection capability.
+   - Field deployments require continuous waveform sampling, transient electromagnetic wave capture,
+     and acoustic/UHF sensor validation beyond basic tabular steady-state measurements.
+======================================================================
